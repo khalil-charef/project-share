@@ -1,0 +1,49 @@
+{% extends 'skin_cancer_detection_app/base.html' %}
+{% block content %}
+
+<div class="doctors-page-container">
+    <h1>البحث عن الأطباء</h1>
+
+    <!-- Search and Filter Form -->
+    <form method="get" class="search-form">
+        <div class="form-group">
+            <input type="text" name="name" placeholder="اسم الطبيب" value="{{ request.GET.name }}" class="form-control">
+        </div>
+        <div class="form-group">
+            <input type="text" name="city" placeholder="الموقع" value="{{ request.GET.city }}" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">بحث</button>
+    </form>
+
+    <!-- Doctors List -->
+    <div class="doctors-list">
+        {% if page_obj.object_list %}
+            {% for doctor in page_obj.object_list %}
+                <div class="doctor-card">
+                    <i class="fa fa-user-md doctor-icon"></i>
+                    <h3>{{ doctor.name }}</h3>
+                    <p><strong>{{ doctor.specialty }}</strong></p>
+                    <p>{{ doctor.phone_number }}</p>
+                    <button class="profile-btn">تعرف على المزيد</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>لا يوجد أطباء يطابقون معايير البحث</p>
+        {% endif %}
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&name={{ request.GET.name }}&city={{ request.GET.city }}" class="btn btn-light">&laquo; السابق</a>
+        {% endif %}
+
+        <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&name={{ request.GET.name }}&city={{ request.GET.city }}" class="btn btn-light">التالي &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

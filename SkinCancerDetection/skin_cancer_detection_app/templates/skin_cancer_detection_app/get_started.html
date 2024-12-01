@@ -1,0 +1,56 @@
+{% extends 'skin_cancer_detection_app/base.html' %}
+{% load static %}
+{% block title %}تطبيق الكشف عن سرطان الجلد{% endblock %}
+{% block content %}
+    <div class="get-started-container">
+        
+            <h1>قم بتحميل صورة لآفة جلدية لمعرفة ما إذا كانت حميدة أو خبيثة.</h1>
+        
+
+        {% if error %}
+            <div class="error-message">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+
+        {% if result %}
+            <div class="result-section">
+                <h2>النتائج</h2>
+                <img src="{{ result.image_path }}" alt="الصورة المرفوعة" class="uploaded-image" >
+                <p><strong>التشخيص:</strong> {{ result.predicted_class }}</p>
+                <p><strong>نسبة الحميد:</strong></p>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-bar-inner benign" style="width: {{ result.benign_confidence }}%;">
+                            {{ result.benign_confidence }}%
+                        </div>
+                    </div>
+                </div>
+                
+                <p><strong>نسبة الخبيث:</strong></p>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-bar-inner malignant" style="width: {{ result.malignant_confidence }}%;">
+                            {{ result.malignant_confidence }}%
+                        </div>
+                    </div>
+                </div>
+            <a href="{% url 'get_started' %}" class="upload-btn">تحميل صورة أخرى</a>
+            </div>
+        {% else %}
+        <form action="{% url 'get_started' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="file">اختر ملف صورة:</label>
+                <input type="file" id="file" name="file" accept="image/*" required onchange="displayFileName()">
+                <label for="file" class="custom-file-upload">تصفح الملفات</label>
+            </div>
+            <p id="file-name" class="image-name"></p>
+            <button type="submit" class="analyse-btn">تحليل الصورة</button>
+        </form>
+        
+        
+        
+        {% endif %}
+    </div>
+{% endblock %}
